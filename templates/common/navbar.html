@@ -1,0 +1,42 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <!-- Nombre del sitio -->
+    <a class="navbar-brand" href="{% url 'index' %}">GameBrowser</a>
+
+    <!-- Botón para vista móvil -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Contenido del navbar -->
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav ms-auto">
+
+        {% if user.is_authenticated %}
+          <!-- Vista de perfil -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}">Hola, {{ user.username }}</a>
+          </li>
+
+          <!-- Logout -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Cerrar sesión</a>
+          </li>
+        {% else %}
+          <!-- Login -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Iniciar sesión</a>
+          </li>
+
+          <!-- Registro -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Registrarse</a>
+          </li>
+        {% endif %}
+
+      </ul>
+    </div>
+  </div>
+</nav>

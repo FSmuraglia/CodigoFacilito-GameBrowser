@@ -14,6 +14,8 @@
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     </head>
     <body>
+        {# Navbar #}
+        {% include "common/navbar.html" %}
         {% block content %}
         {% endblock content %}
     </body>
