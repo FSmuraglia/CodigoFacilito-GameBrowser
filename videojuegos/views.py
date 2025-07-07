@@ -170,3 +170,10 @@ def editar_videojuego(request, videojuego_id):
     }
 
     return render(request, 'videojuegos/editar_videojuego.html', context)
+
+@login_required
+@user_passes_test(es_pro_o_admin)
+def eliminar_videojuego(request, videojuego_id):
+    videojuego = Videojuego.objects.get(id=videojuego_id)
+    videojuego.delete()
+    return redirect('index')

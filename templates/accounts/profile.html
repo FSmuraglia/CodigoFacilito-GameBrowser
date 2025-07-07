@@ -1,13 +1,57 @@
 {% extends 'common/base.html' %}
-
 {% block content %}
-  <div class="profile my-5">
-    <div class="profile__card text-center">
-      <h2 class="mb-3">Hola, <span id="user-name">{{user.username}}</span></h2>
-      <form action="{% url 'logout' %}" method="post" class="d-inline">
-        {% csrf_token %}
-        <button class="btn btn-danger">Cerrar Sesión</button>
-      </form>
+    <div class="container mt-5">
+        <h2>Perfil de {{ usuario.username }}</h2>
+        <p><strong>Rol:</strong> {{ rol }}</p>
+
+        {% if rol == "Noob" %}
+            <hr>
+            <h4>Solicitudes enviadas</h4>
+            {% if solicitudes_enviadas %}
+                <ul class="list-group">
+                    {% for solicitud in solicitudes_enviadas %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span>{{ solicitud.titulo }}</span>
+                            <span class="badge bg-secondary">{{ solicitud.get_estado_display }}</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No enviaste ninguna solicitud todavía.</p>
+            {% endif %}
+        {% endif %}
+
+        {% if solicitudes_aprobadas %}
+            <hr>
+            <h4>Solicitudes Aprobadas</h4>
+            <ul class="list-group">
+                {% for solicitud in solicitudes_aprobadas %}
+                    <li class="list-group-item">{{ solicitud.titulo }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if solicitudes_rechazadas %}
+            <hr>
+            <h4>Solicitudes Rechazadas</h4>
+            <ul class="list-group">
+                {% for solicitud in solicitudes_rechazadas %}
+                    <li class="list-group-item">{{ solicitud.nombre }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if videojuegos_creados %}
+            <hr>
+            <h4>Videojuegos añadidos</h4>
+            <ul class="list-group">
+                {% for videojuego in videojuegos_creados %}
+                  <li class="list-group-item d-flex justify-content-between">
+                      <span>{{ videojuego.titulo }}</span>
+                      <a href="{% url 'detail' videojuego.id %}" class="btn btn-sm btn-outline-primary">Ver</a>
+                  </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
-  </div>
 {% endblock %}

@@ -5,7 +5,7 @@
   <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-
+    <p><strong>Si el juego ya tiene portada, no hace falta modificar el input de Portada</strong></p>
     <label for="capturas">Capturas adicionales</label>
     <input type="file" name="capturas_adicionales" multiple class="form-control mb-3" id="capturas">
 
