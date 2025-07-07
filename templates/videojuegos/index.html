@@ -3,6 +3,54 @@
 
 {% block content %}
 <div class="container mt-4">
+    <form method="GET" class="mb-4">
+        <div class="row g-3">
+
+            <div class="col-md-3">
+                <p class="mb-1 fw-semibold">Título</p>
+                <input type="text" name="titulo" class="form-control" placeholder="Buscar por título" value="{{ request.GET.titulo }}">
+            </div>
+
+            <div class="col-md-3">
+                <p class="mb-1 fw-semibold">Categorías</p>
+                <select name="categorias" multiple class="form-select">
+                    {% for categoria in todas_las_categorias %}
+                        <option value="{{ categoria.id }}"
+                            {% if categoria.id|stringformat:"s" in categorias_seleccionadas %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <p class="mb-1 fw-semibold">Plataformas</p>
+                <select name="plataformas" multiple class="form-select">
+                    {% for plataforma in todas_las_plataformas %}
+                        <option value="{{ plataforma.id }}"
+                            {% if plataforma.id|stringformat:"s" in plataformas_seleccionadas %}selected{% endif %}>
+                            {{ plataforma.nombre }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <p class="mb-1 fw-semibold">Desde</p>
+                <input type="number" name="año_desde" class="form-control" placeholder="Desde" value="{{ request.GET.año_desde }}">
+            </div>
+
+            <div class="col-md-1">
+                <p class="mb-1 fw-semibold">Hasta</p>
+                <input type="number" name="año_hasta" class="form-control" placeholder="Hasta" value="{{ request.GET.año_hasta }}">
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+
+        </div>
+    </form>
     <h1 class="mb-4">Videojuegos</h1>
 
     <div class="row row-cols-1 row-cols-md-4 g-4">

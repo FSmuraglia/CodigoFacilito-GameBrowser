@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .models import Videojuego, Captura, SolicitudVideojuego
+from .models import Videojuego, Captura, SolicitudVideojuego, Categoria, Plataforma
 from .forms import ReseñaForm, VideojuegoForm, SolicitudVideojuegoForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import Group
@@ -13,8 +13,32 @@ def es_noob(user):
 # Create your views here.
 def index(request):
     videojuegos = Videojuego.objects.prefetch_related('categorias', 'capturas').all()
+    titulo = request.GET.get('titulo', '')
+    categorias = request.GET.getlist('categorias')
+    plataformas = request.GET.getlist('plataformas')
+    año_desde = request.GET.get('año_desde')
+    año_hasta = request.GET.get('año_hasta')
+
+    if titulo:
+        videojuegos = videojuegos.filter(titulo__icontains=titulo)
+    if categorias:
+        videojuegos = videojuegos.filter(categorias__id__in=categorias).distinct()
+    if plataformas:
+        videojuegos = videojuegos.filter(plataformas__id__in=plataformas).distinct()
+    if año_desde:
+        videojuegos = videojuegos.filter(año_salida__gte=año_desde)
+    if año_hasta:
+        videojuegos = videojuegos.filter(año_salida__lte=año_hasta)
+    
+    todas_las_categorias = Categoria.objects.all()
+    todas_las_plataformas = Plataforma.objects.all()
+
     context = {
-        'videojuegos': videojuegos
+        'videojuegos': videojuegos,
+        'todas_las_categorias': todas_las_categorias,
+        'todas_las_plataformas': todas_las_plataformas,
+        'categorias_seleccionadas': categorias,
+        'plataformas_seleccionadas': plataformas
     }
 
     return render(request, 'videojuegos/index.html', context)
