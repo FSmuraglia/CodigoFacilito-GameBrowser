@@ -10,3 +10,11 @@ def index(request):
     }
 
     return render(request, 'videojuegos/index.html', context)
+
+def detail(request, videojuego_id):
+    videojuego = Videojuego.objects.prefetch_related('categorias', 'capturas', 'reseñas').get(id=videojuego_id)
+    context = {
+        'videojuego': videojuego
+    }
+
+    return render(request, 'videojuegos/detail.html', context)

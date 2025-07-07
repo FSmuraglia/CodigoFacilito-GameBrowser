@@ -10,8 +10,8 @@
             <div class="col">
                 <div class="card h-100">
                     <!-- Imagen -->
-                    {% if videojuego.capturas.all %}
-                    <img src="{{ videojuego.capturas.all.0.imagen.url }}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Captura de {{ videojuego.titulo }}">
+                    {% if videojuego.portada %}
+                    <img src="{{ videojuego.portada.imagen.url }}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Captura de {{ videojuego.titulo }}">
                     {% else %}  
                     <img src="{% static 'img/default.jpg' %}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Sin imagen">
                     {% endif %}
@@ -33,7 +33,7 @@
                         </p>
 
                         <!-- Botón para ver más -->
-                        <a href="#" class="btn btn-primary">Ver detalles</a>
+                        <a href="{% url 'detail' videojuego_id=videojuego.id %}" class="btn btn-primary">Ver detalles</a>
                     </div>
                 </div>
             </div>
