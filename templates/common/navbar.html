@@ -21,6 +21,12 @@
             <a class="nav-link" href="{% url 'crear-videojuego' %}">Agregar juego</a>
           </li>
         {% endif %}
+        {% if user|tiene_rol:"Noob" %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'solicitud-videojuego' %}">Enviar Solicitud</a>
+          </li>
+        {% endif %}
+
           <!-- Vista de perfil -->
           <li class="nav-item">
             <a class="nav-link" href="{% url 'profile' %}">Hola, {{ user.username }}</a>

@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from .models import Videojuego, Captura
-from .forms import ReseñaForm, VideojuegoForm
+from .forms import ReseñaForm, VideojuegoForm, SolicitudVideojuegoForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 def es_pro_o_admin(user):
     return user.is_authenticated and user.groups.filter(name__in=['Pro', 'Admin']).exists()
+
+def es_noob(user):
+    return user.is_authenticated and user.groups.filter(name='Noob').exists()
 
 # Create your views here.
 def index(request):
@@ -70,3 +73,19 @@ def crear_videojuego(request):
         form = VideojuegoForm()
         
     return render(request, 'videojuegos/crear_videojuego.html', {'form': form})
+
+@login_required
+@user_passes_test(es_noob)
+def enviar_solicitud_videojuego(request):
+    if request.method == 'POST':
+        form = SolicitudVideojuegoForm(request.POST)
+        if form.is_valid():
+            solicitud = form.save(commit=False)
+            solicitud.usuario_solicitante = request.user
+            solicitud.save()
+            form.save_m2m()
+            return redirect('index')
+    else:
+        form = SolicitudVideojuegoForm()
+    
+    return render(request, 'videojuegos/solicitud_videojuego.html', {'form':form})

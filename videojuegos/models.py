@@ -47,13 +47,21 @@ class SolicitudVideojuego(models.Model):
 
     titulo = models.CharField(max_length=100)
     descripcion = models.TextField()
+    fecha_solicitud = models.DateField(default=date.today)
     estado = models.CharField(max_length=5, choices=ESTADOS, default='PEND')
+    categorias = models.ManyToManyField(Categoria, related_name='solicitudes')
     usuario_solicitante = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='solicitudes'
     )
     usuario_aprobador = models.ForeignKey(
-        User, related_name='solicitudes_aprobadas', on_delete=models.CASCADE
+        User, related_name='solicitudes_aprobadas', on_delete=models.CASCADE, null=True, blank=True
     )
+    año_salida = models.IntegerField(
+        default=timezone.now().year,
+        validators=[MinValueValidator(1950), MaxValueValidator(timezone.now().year)]
+    )
+    desarrollador = models.CharField(max_length=100, null=True, blank=True)
+    plataformas = models.ManyToManyField('Plataforma', related_name='solicitudes')
 
     def __str__(self):
         return f"{self.titulo} - ({self.get_estado_display()})"

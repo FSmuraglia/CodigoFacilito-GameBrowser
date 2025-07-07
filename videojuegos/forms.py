@@ -1,5 +1,5 @@
 from django import forms
-from .models import Reseña, Videojuego
+from .models import Reseña, Videojuego, SolicitudVideojuego
 
 class ReseñaForm(forms.ModelForm):
     class Meta:
@@ -26,5 +26,18 @@ class VideojuegoForm(forms.ModelForm):
             'año_salida': forms.NumberInput(attrs={'class': 'form-control'}),
             'desarrollador': forms.TextInput(attrs={'class': 'form-control'}),
             'categorias': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'plataformas': forms.SelectMultiple(attrs={'class': 'form-select'}),
+        }
+
+class SolicitudVideojuegoForm(forms.ModelForm):
+    class Meta:
+        model = SolicitudVideojuego
+        fields = ['titulo', 'descripcion', 'categorias', 'año_salida', 'desarrollador', 'plataformas']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'categorias': forms.SelectMultiple(attrs={'class': 'form-select'}),
+            'año_salida': forms.NumberInput(attrs={'class': 'form-control'}),
+            'desarrollador': forms.TextInput(attrs={'class': 'form-control'}),
             'plataformas': forms.SelectMultiple(attrs={'class': 'form-select'}),
         }
