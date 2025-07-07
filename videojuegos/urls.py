@@ -8,5 +8,6 @@ urlpatterns = [
     path('videojuegos/crear', views.crear_videojuego, name='crear-videojuego'),
     path('videojuegos/solicitud/', views.enviar_solicitud_videojuego, name='solicitud-videojuego'),
     path('videojuegos/solicitudes/', views.listar_solicitudes, name='listar-solicitudes'),
-    path('videojuegos/solicitudes/<int:solicitud_id>', views.revisar_solicitud, name='revisar-solicitud')
+    path('videojuegos/solicitudes/<int:solicitud_id>', views.revisar_solicitud, name='revisar-solicitud'),
+    path('videojuegos/editar/<int:videojuego_id>', views.editar_videojuego, name='editar_videojuego')
 ]

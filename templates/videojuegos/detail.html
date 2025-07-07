@@ -1,5 +1,6 @@
 {% extends 'common/base.html' %}
 {% load static %}
+{% load roles_tags %}
 
 {% block content %}
 <div class="container mt-4">
@@ -37,6 +38,9 @@
             {% endfor %}
 
             <p class="mt-3"><strong>Publicado por el usuario:</strong> {{ videojuego.usuario_creador.username }}</p>
+            {% if user|tiene_rol:"Pro" or user|tiene_rol:"Admin" %}
+                <a href="{% url 'editar_videojuego' videojuego.id %}" class="btn btn-warning mt-4">Editar Juego</a>
+            {% endif %}
         </div>
     </div>
 

@@ -15,7 +15,7 @@ class ReseñaForm(forms.ModelForm):
         }
 
 class VideojuegoForm(forms.ModelForm):
-    portada = forms.ImageField(required=True)
+    portada = forms.ImageField(required=False)
 
     class Meta:
         model = Videojuego

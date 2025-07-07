@@ -119,8 +119,9 @@ def revisar_solicitud(request, solicitud_id):
                 usuario_creador = solicitud.usuario_solicitante,
                 año_salida = solicitud.año_salida,
                 desarrollador = solicitud.desarrollador
-
             )
+            videojuego.categorias.set(solicitud.categorias.all())
+            videojuego.plataformas.set(solicitud.plataformas.all())
 
             cantidad_aprobados = Videojuego.objects.filter(usuario_creador=solicitud.usuario_solicitante).count()
             if cantidad_aprobados >=5:
@@ -137,3 +138,35 @@ def revisar_solicitud(request, solicitud_id):
             return redirect('listar-solicitudes')
     
     return render(request, 'videojuegos/revisar_solicitud.html', {'solicitud': solicitud})
+
+@login_required
+@user_passes_test(es_pro_o_admin)
+def editar_videojuego(request, videojuego_id):
+    videojuego = Videojuego.objects.get(id=videojuego_id)
+
+    if request.method == 'POST':
+        form = VideojuegoForm(request.POST, request.FILES, instance=videojuego)
+        if form.is_valid():
+            videojuego = form.save()
+
+            if 'portada' in request.FILES:
+                nueva_captura = Captura.objects.create(
+                    imagen = form.cleaned_data['portada'],
+                    videojuego = videojuego
+                )
+                videojuego.portada = nueva_captura
+                videojuego.save()
+            
+            for imagen in request.FILES.getlist('capturas_adicionales'):
+                Captura.objects.create(imagen = imagen, videojuego = videojuego)
+            
+            return redirect('detail', videojuego_id=videojuego.id)
+    else:
+        form = VideojuegoForm(instance=videojuego)
+    
+    context = {
+        'form': form,
+        'videojuego': videojuego
+    }
+
+    return render(request, 'videojuegos/editar_videojuego.html', context)
