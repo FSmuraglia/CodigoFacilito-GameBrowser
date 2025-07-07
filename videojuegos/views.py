@@ -1,6 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .models import Videojuego
 
 # Create your views here.
 def index(request):
-    return HttpResponse("<h1> Hola Mundo, Index de la página web </h1>")
+    videojuegos = Videojuego.objects.prefetch_related('categorias').all()
+    context = {
+        'videojuegos': videojuegos
+    }
+
+    return render(request, 'videojuegos/index.html', context)

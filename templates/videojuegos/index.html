@@ -1,0 +1,43 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Videojuegos</h1>
+
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        {% for videojuego in videojuegos %}
+            <div class="col">
+                <div class="card h-100">
+                    <!-- Imagen -->
+                    {% if videojuego.capturas.all %}
+                    <img src="{{ videojuego.capturas.all.0.imagen.url }}" class="card-img-top" style="height: 250px; object-fit: cover;" alt="Captura de {{ videojuego.titulo }}">
+                    {% else %}  
+                    <img src="{% static 'img/default.jpg' %}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Sin imagen">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <!-- Título -->
+                        <h5 class="card-title">{{ videojuego.titulo }}</h5>
+
+                        <!-- Categorías -->
+                        <p class="card-text">
+                            {% for categoria in videojuego.categorias.all|slice:":3" %}
+                                <span class="badge bg-secondary">{{ categoria.nombre }}</span>
+                            {% endfor %}
+                        </p>
+
+                        <!-- Descripción -->
+                        <p class="card-text">
+                            {{ videojuego.descripcion|truncatechars:250 }}
+                        </p>
+
+                        <!-- Botón para ver más -->
+                        <a href="#" class="btn btn-primary">Ver detalles</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock content %}
