@@ -1,7 +1,10 @@
 from django.shortcuts import render, redirect
-from .models import Videojuego
-from .forms import ReseñaForm
-from django.contrib.auth.decorators import login_required
+from .models import Videojuego, Captura
+from .forms import ReseñaForm, VideojuegoForm
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def es_pro_o_admin(user):
+    return user.is_authenticated and user.groups.filter(name__in=['Pro', 'Admin']).exists()
 
 # Create your views here.
 def index(request):
@@ -38,3 +41,32 @@ def reseña_view(request, videojuego_id):
             nueva_reseña.save()
 
     return redirect('detail', videojuego_id=videojuego_id)
+
+@login_required
+@user_passes_test(es_pro_o_admin)
+def crear_videojuego(request):
+    if request.method == 'POST':
+        form = VideojuegoForm(request.POST, request.FILES)
+        if form.is_valid():
+            videojuego = form.save(commit=False)
+            videojuego.usuario_creador = request.user
+            videojuego.save()
+            form.save_m2m()
+
+            portada = Captura.objects.create(
+                imagen = form.cleaned_data['portada'],
+                videojuego = videojuego
+            )
+            videojuego.portada = portada
+            videojuego.save()
+
+            for imagen in request.FILES.getlist('capturas_adicionales'):
+                Captura.objects.create(
+                    imagen = imagen,
+                    videojuego = videojuego
+                )
+            return redirect('detail', videojuego_id=videojuego.id)
+    else:
+        form = VideojuegoForm()
+        
+    return render(request, 'videojuegos/crear_videojuego.html', {'form': form})

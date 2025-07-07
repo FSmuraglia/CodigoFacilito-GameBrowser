@@ -1,0 +1,14 @@
+{% extends 'common/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Agregar Videojuego</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <label>Capturas Adicionales</label>
+        <input type="file" name="capturas_adicionales" multiple class="form-control mb-3">
+        <button type="submit" class="btn btn-success mt-3">Publicar</button>
+    </form>
+</div>
+{% endblock %}
