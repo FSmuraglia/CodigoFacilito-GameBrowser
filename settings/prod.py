@@ -3,6 +3,8 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 ALLOWED_HOSTS = ['137.184.221.100']
 
 # Database
