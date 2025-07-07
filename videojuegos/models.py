@@ -27,7 +27,7 @@ class Reseña(models.Model):
         'Videojuego', on_delete=models.CASCADE, related_name='reseñas'
     )
     usuario = models.ForeignKey(
-        User, related_name='reseñas', on_delete=models.CASCADE
+        User, related_name='reseñas_usuario', on_delete=models.CASCADE
     )
     puntuacion = models.FloatField(
         validators=[MinValueValidator(1.0), MaxValueValidator(5.0)]

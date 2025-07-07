@@ -54,5 +54,57 @@
             <p class="text-muted">Este juego no tiene capturas adicionales.</p>
         {% endfor %}
     </div>
+
+    <!-- Reseñas -->
+    <hr class="my-4">
+    <h4>Reseñas</h4>
+
+    {% if videojuego.reseñas.all %}
+        {% for reseña in reseñas %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="mb-1"><strong>{{ reseña.usuario.username }}</strong></h6>
+                        <small class="text-muted">{{ reseña.fecha_creacion|date:"d/m/Y" }}</small>
+                    </div>
+                    <p class="mb-1 text-warning">
+                        {% for i in "12345"|slice:":5" %}
+                            {% if forloop.counter <= reseña.puntuacion %}
+                                ★
+                            {% else %}
+                                ☆
+                            {% endif %}
+                        {% endfor %}
+                        <small>({{ reseña.puntuacion }}/5)</small>
+                    </p>
+                    <p class="mb-0">{{ reseña.comentario }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">Todavía no hay reseñas para este juego.</p>
+    {% endif %}
+
+    <!-- Agregar Reseñas  -->
+    {% if user.is_authenticated %}
+        <hr class="my-4">
+        <h4>Dejá tu reseña</h4>
+        <form method="POST" action="{% url 'añadir-reseña' videojuego.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.puntuacion.label_tag }}
+                {{ form.puntuacion }}
+            </div>
+            <div class="mb-3">
+                {{ form.comentario.label_tag }}
+                {{ form.comentario }}
+            </div>
+            <button type="submit" class="btn btn-primary">Publicar reseña</button>
+        </form>
+    {% else %}
+        <hr class="my-4">
+        <p><a href="{% url 'login' %}">Iniciá sesión</a> para dejar una reseña.</p>
+    {% endif %}
+
 </div>
 {% endblock %}
