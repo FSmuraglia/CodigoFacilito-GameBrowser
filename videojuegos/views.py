@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
-from .models import Videojuego, Captura
+from .models import Videojuego, Captura, SolicitudVideojuego
 from .forms import ReseñaForm, VideojuegoForm, SolicitudVideojuegoForm
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.models import Group
 
 def es_pro_o_admin(user):
     return user.is_authenticated and user.groups.filter(name__in=['Pro', 'Admin']).exists()
@@ -89,3 +90,50 @@ def enviar_solicitud_videojuego(request):
         form = SolicitudVideojuegoForm()
     
     return render(request, 'videojuegos/solicitud_videojuego.html', {'form':form})
+
+@login_required
+@user_passes_test(es_pro_o_admin)
+def listar_solicitudes(request):
+    solicitudes = SolicitudVideojuego.objects.filter(estado='PEND')
+    context = {
+        'solicitudes': solicitudes
+    }
+
+    return render(request, 'videojuegos/listar_solicitudes.html', context)
+
+@login_required
+@user_passes_test(es_pro_o_admin)
+def revisar_solicitud(request, solicitud_id):
+    solicitud = SolicitudVideojuego.objects.get(id=solicitud_id)
+
+    if request.method == 'POST':
+        accion = request.POST.get('accion')
+        if accion == 'aprobar':
+            solicitud.estado = 'APROB'
+            solicitud.usuario_revisador = request.user
+            solicitud.save()
+
+            videojuego = Videojuego.objects.create(
+                titulo = solicitud.titulo,
+                descripcion = solicitud.descripcion,
+                usuario_creador = solicitud.usuario_solicitante,
+                año_salida = solicitud.año_salida,
+                desarrollador = solicitud.desarrollador
+
+            )
+
+            cantidad_aprobados = Videojuego.objects.filter(usuario_creador=solicitud.usuario_solicitante).count()
+            if cantidad_aprobados >=5:
+                grupo_pro = Group.objects.get(name='Pro')
+                solicitud.usuario_solicitante.groups.clear()
+                solicitud.usuario_solicitante.groups.add(grupo_pro)
+            
+            return redirect('listar-solicitudes')
+        elif accion == 'rechazar':
+            solicitud.estado = 'RECH'
+            solicitud.usuario_revisador = request.user
+            solicitud.save()
+
+            return redirect('listar-solicitudes')
+    
+    return render(request, 'videojuegos/revisar_solicitud.html', {'solicitud': solicitud})

@@ -53,7 +53,7 @@ class SolicitudVideojuego(models.Model):
     usuario_solicitante = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='solicitudes'
     )
-    usuario_aprobador = models.ForeignKey(
+    usuario_revisador = models.ForeignKey(
         User, related_name='solicitudes_aprobadas', on_delete=models.CASCADE, null=True, blank=True
     )
     año_salida = models.IntegerField(
